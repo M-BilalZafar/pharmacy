@@ -1,4 +1,5 @@
 {% load static %}
+{% load cart_template_tag %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,6 +16,13 @@
   <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
   <!-- Your custom styles (optional) -->
   <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <title>{% block head_title %}{% endblock %}</title>
+
+
+
+
+
+
   <style type="text/css">
     html,
     body,
@@ -43,6 +51,9 @@
       }
     }
 
+    
+
+
   </style>
 </head>
 
@@ -53,7 +64,7 @@
     <div class="container">
 
       <!-- Brand -->
-      <a class="navbar-brand waves-effect" href="" target="_blank">
+      <a class="navbar-brand waves-effect" href="/" >
         <strong class="blue-text">Pharmacy</strong>
       </a>
 
@@ -63,26 +74,20 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Links -->
+      <!-- Links --> 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <!-- Left -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link waves-effect" href="#">Home
+            <a class="nav-link waves-effect" href="/">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link waves-effect" href="#" target="_blank">link</a>
+            <a class="nav-link waves-effect" href="/checkout/" >Checkout</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="#"
-              target="_blank">Links</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="#" target="_blank">Links</a>
-          </li>
+         
         </ul>
 
         <!-- Right -->
@@ -100,14 +105,32 @@
           </li>
 
           {% comment %} cart {% endcomment %}
+        {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a href="#" class="waves-effect nav-link border border-light rounded waves-effect"
-              target="_blank">
-              <span class="badge red z-depth-1 mr-1"> 1 </span>
+            <a href="{% url 'app:order-summary' %}" class="waves-effect nav-link border border-light rounded waves-effect"
+             >
+              <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_count }} </span>
               <i class="fas fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
+          <li class="nav-item ml-2">
+            <a href="{% url 'account_logout' %}" class="waves-effect nav-link border border-light rounded waves-effect">
+              <span class="clearfix d-none d-sm-inline-block"> Logout </span>
+            </a>
+          </li>
+         {% else %}
+          <li class="nav-item">
+            <a href="{% url 'account_login' %}" class="waves-effect nav-link border border-light rounded waves-effect">
+              <span class="clearfix d-none d-sm-inline-block"> Login </span>
+            </a>
+          </li>
+          <li class="nav-item ml-2">
+            <a href="{% url 'account_signup' %}" class="waves-effect nav-link border border-light rounded waves-effect">
+              <span class="clearfix d-none d-sm-inline-block"> Signup </span>
+            </a>
+          </li>
+         {% endif %}
         </ul>
 
       </div>
@@ -115,6 +138,17 @@
     </div>
   </nav>
   <!-- Navbar -->
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" style="margin-top: 68px;" role="alert">
+        <strong>Hi!</strong> {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    {% endif %}
 
   {% block content %}
   
@@ -201,6 +235,8 @@
     new WOW().init();
 
   </script>
+
+  
 </body>
 
 </html>
